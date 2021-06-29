@@ -119,7 +119,7 @@ int get_file_data(const char *path, struct pe_file *pe)
     pe->len = pe_stat.st_size;
 
     pe->data = mmap(NULL, pe->len, PROT_READ | PROT_WRITE, MAP_PRIVATE,
-            fd, 0);
+                    fd, 0);
 
     close(fd);
 
