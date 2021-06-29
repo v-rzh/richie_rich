@@ -16,7 +16,14 @@
 
 #include "prodid.h"
 
-#define RICH_HEADER_OFFT    0x80
+#define PE_MAGIC                    0x4550
+#define DOS_MAGIC                   0x5a4d
+#define RICH_FOOTER                 0x68636952
+#define RICH_PTHEADER               0x536e6144
+
+#define PE_HDR_OFFT_OFFT            0x3c
+#define DEFAULT_RICH_HEADER_OFFT    0x80
+
 
 #ifdef DEBUG_BUILD
 #define DLOG(fmt, ...)                  \
@@ -126,14 +133,15 @@ int get_file_data(const char *path, struct pe_file *pe)
 
 int verify_pe(struct pe_file *pe)
 {
-    if (memcmp(pe->data, "MZ", 2)) {
+    if (*((uint16_t *)(pe->data)) != DOS_MAGIC) {
         ELOG("[err] DOS header not found\n");
         return 0;
     }
 
-    pe->pe_offt = *((uint32_t *)(pe->data+0x3c));
+    pe->pe_offt = *((uint32_t *)(pe->data+PE_HDR_OFFT_OFFT));
     DLOG("[debug] PE header @ 0x%x\n", pe->pe_offt);
-    if (memcmp(pe->data+pe->pe_offt, "PE", 2)) {
+
+    if (*((uint16_t *)(pe->data+pe->pe_offt)) != PE_MAGIC) {
         ELOG("[err] PE header not found\n");
         return 0;
     }
@@ -145,22 +153,22 @@ int find_rich_header(struct pe_file *pe)
     uint32_t i;
 
     for (i = pe->rich_beg_offt; i < pe->pe_offt; i++) {
-        if (pe->data[i] != 0x52)
+        if (pe->data[i] != 'R')
             continue;
 
-        if ((*(uint32_t*)(pe->data+i)) != 0x68636952)
+        if ((*(uint32_t*)(pe->data+i)) != RICH_FOOTER)
             continue;
 
         pe->rich_end_offt = i;
         i += 4;
         pe->rich_key = *((uint32_t *)(pe->data+i));
         DLOG("[debug] Rich footer found\n"
-               "[debug] Checksum/Key: 0x%x\n",
-               pe->rich_key);
+             "[debug] Checksum/Key: 0x%x\n",
+             pe->rich_key);
         return 1;
     }
 
-    puts("[err] Rich header not found");
+    puts("[err] Rich footer not found");
     return 0;
 }
 
@@ -187,7 +195,7 @@ void decode_dump_rich_header(struct pe_file *pe)
         *(uint32_t *)(pe->data+i) = tmp;
 
         if (i == pe->rich_beg_offt) {
-            if (tmp != 0x536e6144) {
+            if (tmp != RICH_PTHEADER) {
                 ELOG("[err] Rich header not found\n");
                 return;
             }
@@ -220,7 +228,7 @@ int main(int argc, char **argv)
         pe.rich_beg_offt = (uint32_t)tmp;
         DLOG("[debug] Custom Rich header offset: 0x%x\n", pe.rich_beg_offt);
     } else if (argc == 2) {
-        pe.rich_beg_offt = RICH_HEADER_OFFT;
+        pe.rich_beg_offt = DEFAULT_RICH_HEADER_OFFT;
     } else {
         usage(argv[0]);
     }
