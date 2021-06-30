@@ -24,7 +24,6 @@
 #define PE_HDR_OFFT_OFFT            0x3c
 #define DEFAULT_RICH_HEADER_OFFT    0x80
 
-
 #ifdef DEBUG_BUILD
 #define DLOG(fmt, ...)                  \
     printf(fmt, ##__VA_ARGS__)
@@ -60,7 +59,7 @@ static void usage(const char *n)
 }
 
 #ifdef _WINDOWS
-int get_file_data(const char *path, struct pe_file *pe)
+static int get_file_data(const char *path, struct pe_file *pe)
 {
     HANDLE fd, proc_heap;
     DWORD file_size, bytes_read;
@@ -99,7 +98,7 @@ int get_file_data(const char *path, struct pe_file *pe)
     return 0;
 }
 #else
-int get_file_data(const char *path, struct pe_file *pe)
+static int get_file_data(const char *path, struct pe_file *pe)
 {
     int fd, errno_save;
     struct stat pe_stat;
@@ -132,7 +131,7 @@ int get_file_data(const char *path, struct pe_file *pe)
 }
 #endif
 
-int verify_pe(struct pe_file *pe)
+static int verify_pe(struct pe_file *pe)
 {
     if (*((uint16_t *)(pe->data)) != DOS_MAGIC) {
         ELOG("[err] DOS header not found\n");
@@ -149,7 +148,7 @@ int verify_pe(struct pe_file *pe)
     return 1;
 }
 
-int find_rich_header(struct pe_file *pe)
+static int find_rich_header(struct pe_file *pe)
 {
     uint32_t i;
 
@@ -169,11 +168,11 @@ int find_rich_header(struct pe_file *pe)
         return 1;
     }
 
-    puts("[err] Rich footer not found");
+    ELOG("[err] Rich footer not found");
     return 0;
 }
 
-void print_rich_header_entry(struct rich_entry *re)
+static void print_rich_header_entry(struct rich_entry *re)
 {
     int i;
     printf("%d\t%d\t\t%s (0x%04x)\n",
@@ -183,7 +182,7 @@ void print_rich_header_entry(struct rich_entry *re)
 }
 
 
-void decode_dump_rich_header(struct pe_file *pe)
+static void decode_dump_rich_header(struct pe_file *pe)
 {
     struct rich_entry *entry;
     uint32_t tmp;
