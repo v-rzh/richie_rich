@@ -101,7 +101,7 @@ int get_file_data(const char *path, struct pe_file *pe)
 #else
 int get_file_data(const char *path, struct pe_file *pe)
 {
-    int fd;
+    int fd, errno_save;
     struct stat pe_stat;
 
     memset(&pe_stat, 0, sizeof(struct stat));
@@ -121,10 +121,11 @@ int get_file_data(const char *path, struct pe_file *pe)
     pe->data = mmap(NULL, pe->len, PROT_READ | PROT_WRITE, MAP_PRIVATE,
                     fd, 0);
 
+    errno_save = errno;
     close(fd);
 
     if (pe->data == MAP_FAILED) {
-        ELOG("[err] mmap: %s\n", strerror(errno));
+        ELOG("[err] mmap: %s\n", strerror(errno_save));
         return -1;
     }
     return 0;
