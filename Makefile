@@ -1,6 +1,15 @@
 CC=gcc
-SRC=richie_rich.c
-BIN=richie_rich
+
+SRC=richie_rich.c pe.c rich.c util.c
+
+VPATH=src
+INCLUDE=include
+BUILD=build
+
+BIN=$(SRC:%.c=$(BUILD)/%.o)
+CFLAGS=-I$(INCLUDE)
+
+PROG=richie_rich
 
 # Edit this value accordingly
 MINGWCC=x86_64-w64-mingw32-gcc
@@ -21,13 +30,17 @@ ifeq ($(debug),true)
 	CFLAGS+=-DDEBUG_BUILD
 endif
 
-.PHONY: all
+.PHONY: all clean
 
-all: $(BIN)
+all: $(PROG)
 
-$(BIN): $(SRC)
+$(BIN): $(BUILD)/%.o: %.c
+	$(CC) $(CFLAGS) $< -c -o $@
+
+$(PROG): $(BIN)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 clean:
+	-rm $(PROG)
+	-rm $(PROG).exe
 	-rm $(BIN)
-	-rm $(BIN).exe
