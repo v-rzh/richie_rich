@@ -3,7 +3,6 @@
 
 static void rich_print_header_entry(struct rich_entry *re)
 {
-    int i;
     printf("%d\t%d\t\t%s (0x%04x)\n",
            re->use_count, re->minor_version,
            re->prod_id >= PROD_IDS_NO ? "" : prod_ids[re->prod_id],
