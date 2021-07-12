@@ -5,7 +5,7 @@ static void usage(const char *n) __attribute__((noreturn));
 static void usage(const char *n)
 {
 
-    ELOG("Usage: %s <-i path_to_pe> [-w out_file] [-o rich_header_offset] "
+    ELOG("Usage: %s -i path_to_pe [-w out_file] [-o rich_header_offset] "
          "[-v] [-s] \n\n", n);
     ELOG("  -i\tPath to the subject PE (required)\n");
     ELOG("  -s\tStrip the rich header from the executable (requires -w)\n");
