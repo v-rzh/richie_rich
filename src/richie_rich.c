@@ -10,7 +10,7 @@ static void usage(const char *n)
     ELOG("  -i\tPath to the subject PE (required)\n");
     ELOG("  -s\tStrip the rich header from the executable (requires -w)\n");
     ELOG("  -w\tPath to the new PE file\n");
-    ELOG("  -o\tSet a custom rich header offset (default is %lu)\n",
+    ELOG("  -o\tSet a custom rich header offset (default is %u)\n",
          RICH_DEFAULT_HEADER_OFFT);
     ELOG("  -v\tVerify the Rich header checksum\n\n");
     exit(1);
@@ -30,6 +30,7 @@ int main(int argc, char **argv)
     while ((opt = getopt(argc, argv, "vso:w:i:")) != -1) {
         switch (opt) {
         case 'o':
+        {
             unsigned long tmp = strtoul(optarg, NULL, 10);
             if (tmp > UINT_MAX) {
                 ELOG("[err] Invalid Rich Header offset: %s\n", optarg);
@@ -39,6 +40,7 @@ int main(int argc, char **argv)
             DLOG("[debug] Custom Rich header offset: 0x%x\n",
                  pe.rich_beg_offt);
             break;
+        }
         case 'i':
             in_file = optarg;
             break;

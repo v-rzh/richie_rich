@@ -7,7 +7,7 @@ INCLUDE=include
 BUILD=build
 
 BIN=$(SRC:%.c=$(BUILD)/%.o)
-CFLAGS=-I$(INCLUDE)
+CFLAGS=-I$(INCLUDE) -O2 -Wall -Wextra -pedantic -Wshadow -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wdeclaration-after-statement
 
 PROG=richie_rich
 

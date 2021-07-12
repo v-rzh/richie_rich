@@ -16,8 +16,8 @@
 #include <sys/stat.h>
 #endif
 
-#define OPT_STRIP                   0b00000001
-#define OPT_VERIFY                  0b00000010
+#define OPT_STRIP                   (1 << 0)
+#define OPT_VERIFY                  (1 << 1)
 
 #define VERIFY_CHECKSUM(x)          ((x)&OPT_VERIFY)
 #define STRIP_HEADER(x)             ((x)&OPT_STRIP)

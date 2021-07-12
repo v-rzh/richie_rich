@@ -9,19 +9,19 @@ int get_file_data(const char *path, struct pe_file *pe)
     fd = CreateFileA(path, GENERIC_READ, 0, NULL, OPEN_EXISTING,
                      FILE_ATTRIBUTE_NORMAL, NULL);
     if (fd == INVALID_HANDLE_VALUE) {
-        ELOG("[err] CreateFileA: (ERR: %d)\n", GetLastError());
+        ELOG("[err] CreateFileA: (ERR: %ld)\n", GetLastError());
         return -1;
     }
 
     file_size = GetFileSize(fd, NULL);
 
     if (file_size == INVALID_FILE_SIZE) {
-        ELOG("[err] GetFileSize: (ERR: %d)\n", GetLastError());
+        ELOG("[err] GetFileSize: (ERR: %ld)\n", GetLastError());
         return -1;
     }
 
     if (!(proc_heap = GetProcessHeap())) {
-        ELOG("[err] GetProcessHeap: (ERR: %d)\n", GetLastError());
+        ELOG("[err] GetProcessHeap: (ERR: %ld)\n", GetLastError());
         return -1;
     }
 
@@ -31,7 +31,7 @@ int get_file_data(const char *path, struct pe_file *pe)
     }
 
     if (!ReadFile(fd, pe->data, file_size, &bytes_read, NULL)) {
-        ELOG("[err] ReadFile: (ERR: %d)\n", GetLastError());
+        ELOG("[err] ReadFile: (ERR: %ld)\n", GetLastError());
         CloseHandle(fd);
         return -1;
     }
@@ -79,17 +79,17 @@ int get_file_data(const char *path, struct pe_file *pe)
 int write_file(const char *path, uint8_t *data, size_t len)
 {
     HANDLE fd;
-    DWORD bytes_written, total_bytes = 0;
+    DWORD bytes_written;
     fd = CreateFileA(path, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
                      FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (fd == INVALID_HANDLE_VALUE) {
-        ELOG("[err] CreateFileA: (ERR: %d)\n", GetLastError());
+        ELOG("[err] CreateFileA: (ERR: %ld)\n", GetLastError());
         return -1;
     }
 
     if (!WriteFile(fd, data, len, &bytes_written, NULL)) {
-        ELOG("[err] WriteFile: (ERR: %d)\n", GetLastError());
+        ELOG("[err] WriteFile: (ERR: %ld)\n", GetLastError());
         return -1;
     }
 
