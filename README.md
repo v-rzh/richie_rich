@@ -4,11 +4,11 @@ A portable command-line tool for browsing, stripping, and verifying the Rich hea
 
 ## Building
 
+Tested on Linux, MacOS, and Windows with [MSYS2+MinGW64](https://www.msys2.org/).
+
 In most cases you simply need to do this:
 
 `[ab@gibson]$ mkdir build && make`
-
-Tested on Linux, MacOS, and Windows with [MSYS2+MinGW64](https://www.msys2.org/).
 
 Building with debugging logs:
 
@@ -27,7 +27,7 @@ make cc-win=true
 
 ```bash
 [ab@gibson]$ ./richie_rich
-Usage: ./richie_rich <-i path_to_pe> [-w out_file] [-o rich_header_offset] [-v] [-s]
+Usage: ./richie_rich -i path_to_pe [-w out_file] [-o rich_header_offset] [-v] [-s]
 
   -i    Path to the subject PE (required)
   -s    Strip the rich header from the executable (requires -w)
@@ -98,7 +98,7 @@ Count    Minor Version    ProdID
 
 Read `prodid.h` if you're wondering where I got the ProdID values.
 
-## Upcoming features
+## Upcoming Features
 
 - Ability to add/replace existing Rich header with a realistic fake Rich
   header.
