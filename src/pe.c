@@ -1,4 +1,3 @@
-
 #include <richie_rich.h>
 
 int pe_verify(struct pe_file *pe)
